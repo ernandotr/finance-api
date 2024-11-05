@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("api/v1/transactions")
+@RequestMapping("/api/v1/transactions")
 public class TransactionController {
 
     Map<Long, TransactionResponse> transactions = new HashMap<>();
@@ -36,16 +36,16 @@ public class TransactionController {
     }
 
     @PostMapping
-    public ResponseEntity.BodyBuilder createTransaction(@RequestBody TransactionResquest transactionResquest, HttpServletRequest request) {
+    public ResponseEntity<?> createTransaction(@RequestBody TransactionResquest transactionResquest, HttpServletRequest request) {
         String urlBase = ServletUriComponentsBuilder.fromRequestUri(request)
                 .replacePath(null)
                 .build().toString();
-        Long id = transactions.keySet().stream().sorted().max(Comparator.comparingLong(Long::longValue)).get() + 1;
+        Long id = transactions.keySet().stream().sorted().max(Comparator.comparingLong(Long::longValue)).orElse(1L);
 
-        var t  = new TransactionResponse(id, transactionResquest.target(), transactionResquest.source(),
+        var t  = new TransactionResponse(++id, transactionResquest.target(), transactionResquest.source(),
                 transactionResquest.value(), new CategoryResponse(transactionResquest.categoryId(), "Any"));
         transactions.put(id, t);
-        return ResponseEntity.created(URI.create(urlBase));
+        return ResponseEntity.created(URI.create(urlBase)).build();
 
     }
 
