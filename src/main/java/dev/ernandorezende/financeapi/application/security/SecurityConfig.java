@@ -1,4 +1,4 @@
-package dev.ernandorezende.financeapi.infra.security;
+package dev.ernandorezende.financeapi.application.security;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

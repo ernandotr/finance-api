@@ -1,4 +1,4 @@
-package dev.ernandorezende.financeapi.controller;
+package dev.ernandorezende.financeapi.application.controller;
 
 import dev.ernandorezende.financeapi.application.requests.TransactionResquest;
 import dev.ernandorezende.financeapi.application.responses.CategoryResponse;
