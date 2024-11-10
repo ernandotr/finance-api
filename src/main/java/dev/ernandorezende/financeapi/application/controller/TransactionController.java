@@ -3,7 +3,9 @@ package dev.ernandorezende.financeapi.application.controller;
 import dev.ernandorezende.financeapi.application.requests.TransactionResquest;
 import dev.ernandorezende.financeapi.application.responses.CategoryResponse;
 import dev.ernandorezende.financeapi.application.responses.TransactionResponse;
+import dev.ernandorezende.financeapi.domain.services.TransactionService;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -17,36 +19,21 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/transactions")
+@RequiredArgsConstructor
 public class TransactionController {
 
-    Map<Long, TransactionResponse> transactions = new HashMap<>();
-
+    private final TransactionService transactionService;
 
     @GetMapping
     public ResponseEntity<List<TransactionResponse>> getAll() {
-        var supermaket = new CategoryResponse(1, "Supermaket");
-        var fuel = new CategoryResponse(2, "Fuels");
-        var t1 =  new TransactionResponse(1L, "Pingo Doce", "Millennium", BigDecimal.valueOf(234.95), supermaket);
-        var t2 =  new TransactionResponse(2L, "Galp", "Wallet", BigDecimal.valueOf(40.0), fuel);
 
-        transactions.put(t1.id(), t1);
-        transactions.put(t2.id(), t2);
-
-        return  ResponseEntity.ok(transactions.values().stream().toList());
+        return  ResponseEntity.ok(transactionService.getAll());
     }
 
     @PostMapping
     public ResponseEntity<?> createTransaction(@RequestBody TransactionResquest transactionResquest, HttpServletRequest request) {
-        String urlBase = ServletUriComponentsBuilder.fromRequestUri(request)
-                .replacePath(null)
-                .build().toString();
-        Long id = transactions.keySet().stream().sorted().max(Comparator.comparingLong(Long::longValue)).orElse(1L);
 
-        var t  = new TransactionResponse(++id, transactionResquest.target(), transactionResquest.source(),
-                transactionResquest.value(), new CategoryResponse(transactionResquest.categoryId(), "Any"));
-        transactions.put(id, t);
-        return ResponseEntity.created(URI.create(urlBase)).build();
-
+        return ResponseEntity.ok(transactionService.create(transactionResquest));
     }
 
 }

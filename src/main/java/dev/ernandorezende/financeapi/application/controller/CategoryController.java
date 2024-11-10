@@ -1,10 +1,10 @@
 package dev.ernandorezende.financeapi.application.controller;
 
+import dev.ernandorezende.financeapi.application.requests.CategoryRequest;
 import dev.ernandorezende.financeapi.application.responses.CategoryResponse;
 import dev.ernandorezende.financeapi.domain.services.CategoryService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -18,8 +18,14 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
+    @GetMapping
     public ResponseEntity<List<CategoryResponse>> getAll() {
 
-        return ResponseEntity.ok(categoryService.getAll());
+        return ResponseEntity.ok(this.categoryService.getAll());
+    }
+
+    @PostMapping
+    public ResponseEntity<CategoryResponse> create(@RequestBody CategoryRequest categoryRequest) {
+        return ResponseEntity.ok(categoryService.createCategory(categoryRequest));
     }
 }
