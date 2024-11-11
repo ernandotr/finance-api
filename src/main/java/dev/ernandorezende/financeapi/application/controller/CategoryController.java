@@ -26,6 +26,23 @@ public class CategoryController {
 
     @PostMapping
     public ResponseEntity<CategoryResponse> create(@RequestBody CategoryRequest categoryRequest) {
-        return ResponseEntity.ok(categoryService.createCategory(categoryRequest));
+        return ResponseEntity.ok(this.categoryService.createCategory(categoryRequest));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CategoryResponse> getById(@PathVariable Integer id) {
+        return ResponseEntity.ok(this.categoryService.getById(id));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Integer id) {
+        this.categoryService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> update(@RequestBody CategoryRequest categoryRequest,  @PathVariable Integer id) {
+        this.categoryService.update(categoryRequest, id);
+        return ResponseEntity.noContent().build();
     }
 }

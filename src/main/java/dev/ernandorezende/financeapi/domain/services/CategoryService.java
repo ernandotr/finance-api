@@ -35,4 +35,14 @@ public class CategoryService {
         var category =  categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
         return new CategoryResponse(category.getId(), category.getName());
     }
+
+    public void update(CategoryRequest categoryRequest, Integer id) {
+        var category = categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
+        category.setName(categoryRequest.name());
+        categoryRepository.save(category);
+    }
+
+    public void delete(Integer id) {
+        categoryRepository.deleteById(id);
+    }
 }

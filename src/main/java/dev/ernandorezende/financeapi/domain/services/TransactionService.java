@@ -4,6 +4,7 @@ import dev.ernandorezende.financeapi.application.requests.TransactionResquest;
 import dev.ernandorezende.financeapi.application.responses.CategoryResponse;
 import dev.ernandorezende.financeapi.application.responses.TransactionResponse;
 import dev.ernandorezende.financeapi.domain.exceptions.CategoryNotFoundException;
+import dev.ernandorezende.financeapi.domain.exceptions.TransactionNotFoundException;
 import dev.ernandorezende.financeapi.domain.models.Category;
 import dev.ernandorezende.financeapi.domain.models.Transaction;
 import dev.ernandorezende.financeapi.infra.reposirories.CategoryRepository;
@@ -25,25 +26,45 @@ public class TransactionService {
                 .map(this::toTransactionResponse).toList();
     }
 
+    public TransactionResponse getById(Long id) {
+        var transaction = transactionRepository.findById(id).orElseThrow(TransactionNotFoundException::new);
+        return toTransactionResponse(transaction);
+    }
+
+    public void delete(Long id) {
+        this.transactionRepository.deleteById(id);
+    }
+
+    public TransactionResponse create(TransactionResquest request) {
+        Transaction transaction = transactionRepository.save(toEntity(request));
+        return toTransactionResponse(transaction);
+    }
+
+    public void  update(TransactionResquest request, Long id) {
+        Transaction transaction =  transactionRepository.findById(id).orElseThrow(TransactionNotFoundException::new);
+        transaction.setTransactionValue(request.value());
+        transaction.setCategory(categoryRepository.findById(request.categoryId()).orElseThrow(CategoryNotFoundException::new));
+        transaction.setTarget(request.target());
+        transaction.setSource(request.source());
+        transaction = transactionRepository.save(transaction);
+    }
+
     private TransactionResponse toTransactionResponse(Transaction transaction) {
-        return new TransactionResponse(
-                transaction.getId(), transaction.getTarget(), transaction.getSource(), transaction.getTransactionValue(),
-                toCategoryResponse(transaction.getCategory()));
+        return new TransactionResponse(transaction.getId(), transaction.getTarget(), transaction.getSource(), 
+                transaction.getTransactionValue(), toCategoryResponse(transaction.getCategory()));
     }
 
     private static CategoryResponse toCategoryResponse(Category category) {
         return new CategoryResponse(category.getId(), category.getName());
     }
 
-    public TransactionResponse create(TransactionResquest resquest) {
-        var category = categoryRepository.findById(resquest.categoryId()).orElseThrow(CategoryNotFoundException::new);
-        var transaction = Transaction.builder().
-                transactionValue(resquest.value())
+    private Transaction toEntity(TransactionResquest request) {
+        var category = this.categoryRepository.findById(request.categoryId()).orElseThrow(CategoryNotFoundException::new);
+        return Transaction.builder().
+                transactionValue(request.value())
                 .category(category)
-                .target(resquest.target())
-                .source(resquest.source())
+                .target(request.target())
+                .source(request.source())
                 .build();
-        transaction = transactionRepository.save(transaction);
-        return toTransactionResponse(transaction);
     }
 }

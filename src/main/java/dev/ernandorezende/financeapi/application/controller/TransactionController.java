@@ -26,14 +26,29 @@ public class TransactionController {
 
     @GetMapping
     public ResponseEntity<List<TransactionResponse>> getAll() {
+        return  ResponseEntity.ok(this.transactionService.getAll());
+    }
 
-        return  ResponseEntity.ok(transactionService.getAll());
+    @GetMapping("/{id}")
+    public ResponseEntity<TransactionResponse> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(this.transactionService.getById(id));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        this.transactionService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping
-    public ResponseEntity<?> createTransaction(@RequestBody TransactionResquest transactionResquest, HttpServletRequest request) {
+    public ResponseEntity<TransactionResponse> createTransaction(@RequestBody TransactionResquest transactionResquest, HttpServletRequest request) {
+        return ResponseEntity.ok(this.transactionService.create(transactionResquest));
+    }
 
-        return ResponseEntity.ok(transactionService.create(transactionResquest));
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateTransaction(@RequestBody TransactionResquest transactionResquest, @PathVariable Long id) {
+        this.transactionService.update(transactionResquest, id);
+        return ResponseEntity.noContent().build();
     }
 
 }
