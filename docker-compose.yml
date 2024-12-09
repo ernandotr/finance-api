@@ -8,8 +8,8 @@ services:
     environment:
       - POSTGRES_USER=docker
       - POSTGRES_PASSWORD=docker
-      - POSTGRES_DB=fina
+      - POSTGRES_DB=finance
     volumes:
-      - 'cards_pg_data:/bitnami/postgresql'
+      - 'finance_pg_data:/bitnami/postgresql'
 volumes:
-  cards_pg_data:
+  finance_pg_data:
