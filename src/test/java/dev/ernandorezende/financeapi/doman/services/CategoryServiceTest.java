@@ -26,7 +26,8 @@ public class CategoryServiceTest {
 
     @Test
     void createCategorySuccessTest() {
-        var expectedCategory = Category.builder().name("Supermarket").id(1).build();
+        var expectedCategory = new Category("Supermarket");
+        expectedCategory.setId(1);
         var request =  new CategoryRequest("Supermarket");
         when(categoryRepository.save(any(Category.class))).thenReturn(expectedCategory);
         categoryService.createCategory(request);

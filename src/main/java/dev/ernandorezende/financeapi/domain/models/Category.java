@@ -1,16 +1,8 @@
 package dev.ernandorezende.financeapi.domain.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Builder
-@Data
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "tb_category")
 public class Category {
 
@@ -20,4 +12,25 @@ public class Category {
 
     private String name;
 
+    public Category(){}
+
+    public Category(String name) {
+        this.name = name;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

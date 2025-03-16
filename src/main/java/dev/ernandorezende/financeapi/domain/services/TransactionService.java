@@ -9,17 +9,20 @@ import dev.ernandorezende.financeapi.domain.models.Category;
 import dev.ernandorezende.financeapi.domain.models.Transaction;
 import dev.ernandorezende.financeapi.infra.reposirories.CategoryRepository;
 import dev.ernandorezende.financeapi.infra.reposirories.TransactionRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@RequiredArgsConstructor
 @Service
 public class TransactionService {
 
     private final TransactionRepository transactionRepository;
     private final CategoryRepository categoryRepository;
+
+    public TransactionService(TransactionRepository transactionRepository, CategoryRepository categoryRepository) {
+        this.transactionRepository = transactionRepository;
+        this.categoryRepository = categoryRepository;
+    }
 
     public List<TransactionResponse> getAll(){
         return transactionRepository.findAll().stream()
@@ -60,11 +63,6 @@ public class TransactionService {
 
     private Transaction toEntity(TransactionResquest request) {
         var category = this.categoryRepository.findById(request.categoryId()).orElseThrow(CategoryNotFoundException::new);
-        return Transaction.builder().
-                transactionValue(request.value())
-                .category(category)
-                .target(request.target())
-                .source(request.source())
-                .build();
+        return new  Transaction(request.target(), request.value(),  request.source(), category);
     }
 }

@@ -19,16 +19,16 @@ public class CategoryService {
     }
 
     public CategoryResponse createCategory(CategoryRequest request){
-        var category =  Category.builder()
-                .name(request.name())
-                .build();
+        var category = new Category(request.name());
         category = categoryRepository.save(category);
         return new CategoryResponse(category.getId(), category.getName());
 
     }
 
     public List<CategoryResponse> getAll() {
-        return categoryRepository.findAll().stream().map(category -> new CategoryResponse(category.getId(), category.getName())).toList();
+        return categoryRepository.findAll().stream()
+                .map(category -> new CategoryResponse(category.getId(), category.getName()))
+                .toList();
     }
 
     public CategoryResponse getById(Integer id) {
