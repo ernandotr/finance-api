@@ -10,10 +10,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class CategoryServiceTest {
@@ -26,8 +27,7 @@ public class CategoryServiceTest {
 
     @Test
     void createCategorySuccessTest() {
-        var expectedCategory = new Category("Supermarket");
-        expectedCategory.setId(1);
+        var expectedCategory = new Category(1,"Supermarket");
         var request =  new CategoryRequest("Supermarket");
         when(categoryRepository.save(any(Category.class))).thenReturn(expectedCategory);
         categoryService.createCategory(request);
@@ -35,5 +35,17 @@ public class CategoryServiceTest {
 
         assertThat(expectedCategory.getId()).isNotNull();
         assertThat(expectedCategory.getId()).isEqualTo(1);
+    }
+
+    @Test
+    void getAllCategoriesSuccess() {
+        var category = new Category(1,"Supermarket");
+        var expectedCategories = List.of(category);
+        when(categoryRepository.findAll()).thenReturn(expectedCategories);
+        var categories = categoryService.getAll();
+        assertThat(categories).isNotNull();
+        assertThat(categories).isNotEmpty();
+        assertThat(categories.getFirst().id()).isEqualTo(1);
+        verify(categoryRepository, times(1)).findAll();
     }
 }
