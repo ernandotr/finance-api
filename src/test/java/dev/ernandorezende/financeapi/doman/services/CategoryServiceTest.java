@@ -59,4 +59,10 @@ public class CategoryServiceTest {
         assertThat(categoria.id()).isEqualTo(1);
         verify(categoryRepository, times(1)).findById(anyInt());
     }
+
+    @Test
+    void deleteSuccessful(){
+        categoryService.delete(1);
+        verify(categoryRepository).deleteById(anyInt());
+    }
 }
