@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -43,9 +44,19 @@ public class CategoryServiceTest {
         var expectedCategories = List.of(category);
         when(categoryRepository.findAll()).thenReturn(expectedCategories);
         var categories = categoryService.getAll();
+
         assertThat(categories).isNotNull();
         assertThat(categories).isNotEmpty();
         assertThat(categories.getFirst().id()).isEqualTo(1);
         verify(categoryRepository, times(1)).findAll();
+    }
+
+    @Test
+    void findByIdSuccessful(){
+        var expectedCategory = new Category(1,"Supermarket");
+        when(categoryRepository.findById(anyInt())).thenReturn(Optional.of(expectedCategory));
+        var categoria = categoryService.getById(1);
+        assertThat(categoria.id()).isEqualTo(1);
+        verify(categoryRepository, times(1)).findById(anyInt());
     }
 }
