@@ -39,6 +39,20 @@ public class CategoryServiceTest {
     }
 
     @Test
+    void updateCategorySuccessTest() {
+        var expectedCategory = new Category(1,"Supermarket");
+        var request =  new CategoryRequest("Supermarket");
+        when(categoryRepository.findById(anyInt())).thenReturn(Optional.of(expectedCategory));
+        when(categoryRepository.save(any(Category.class))).thenReturn(expectedCategory);
+        categoryService.update(request, 1);
+        verify(categoryRepository).findById(anyInt());
+        verify(categoryRepository).save(any());
+
+        assertThat(expectedCategory.getId()).isNotNull();
+        assertThat(expectedCategory.getId()).isEqualTo(1);
+    }
+
+    @Test
     void getAllCategoriesSuccess() {
         var category = new Category(1,"Supermarket");
         var expectedCategories = List.of(category);
