@@ -11,6 +11,7 @@ import dev.ernandorezende.financeapi.infra.reposirories.CategoryRepository;
 import dev.ernandorezende.financeapi.infra.reposirories.TransactionRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.*;
 import java.util.List;
 
 @Service
@@ -49,7 +50,7 @@ public class TransactionService {
         transaction.setCategory(categoryRepository.findById(request.categoryId()).orElseThrow(CategoryNotFoundException::new));
         transaction.setTarget(request.target());
         transaction.setSource(request.source());
-        transaction = transactionRepository.save(transaction);
+        transactionRepository.save(transaction);
     }
 
     private TransactionResponse toTransactionResponse(Transaction transaction) {
