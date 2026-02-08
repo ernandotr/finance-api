@@ -31,7 +31,7 @@ public class TransactionService {
     }
 
     public TransactionResponse getById(Long id) {
-        var transaction = transactionRepository.findById(id).orElseThrow(RuntimeException::new);
+        var transaction = transactionRepository.findById(id).orElseThrow(TransactionNotFoundException::new);
         return toTransactionResponse(transaction);
     }
 
@@ -50,11 +50,7 @@ public class TransactionService {
         transaction.setCategory(categoryRepository.findById(request.categoryId()).orElseThrow(CategoryNotFoundException::new));
         transaction.setTarget(request.target());
         transaction.setSource(request.source());
-        transaction = transactionRepository.save(transaction);
-
-
-
-
+        transactionRepository.save(transaction);
     }
 
     private TransactionResponse toTransactionResponse(Transaction transaction) {
